@@ -171,3 +171,40 @@ Fixed the issue where players had no way to start a new game when they lost. Add
 - `src/components/VideoPoker/GameBoard.tsx` - Relocated buttons and added new game functionality for losses
 
 Players can now always start a new game regardless of whether they win or lose!
+
+## 2025-07-05 - Winner Section Repositioned Below Payout Table
+
+### Summary
+Moved the winner notification section from a centered popup overlay to a positioned element below the payout table in the sidebar for better layout and accessibility.
+
+### Changes Made
+- **Repositioned Winner Section**: Moved WinNotification from fixed popup to below PayoutTable in sidebar
+- **Improved Layout**: Winner notification now appears as part of the natural flow instead of covering other elements
+- **Better Accessibility**: No more overlapping elements that could hide important buttons or information
+- **Responsive Design**: Winner section now fits properly within the sidebar layout
+- **Adjusted Sizing**: Reduced text sizes and padding to fit better in the sidebar space
+
+### Technical Implementation
+- **GameBoard Component**:
+  - Removed WinNotification from top-level popup position
+  - Added WinNotification below PayoutTable in sidebar
+- **WinNotification Component**:
+  - Changed from `fixed` positioning to normal flow positioning
+  - Reduced text sizes (text-6xl → text-4xl, text-3xl → text-2xl, etc.)
+  - Adjusted padding and margins for sidebar fit
+  - Maintained all animations and functionality
+
+### Layout Changes:
+- **Before**: Winner notification appeared as centered popup overlay
+- **After**: Winner notification appears below payout table in right sidebar
+- **Benefits**:
+  - No more hidden buttons or overlapping elements
+  - Better visual hierarchy
+  - Cleaner overall layout
+  - Easier to read payout table while celebrating wins
+
+### Files Modified
+- `src/components/VideoPoker/GameBoard.tsx` - Repositioned WinNotification component
+- `src/components/VideoPoker/WinNotification.tsx` - Updated positioning and sizing for sidebar layout
+
+The winner section now integrates seamlessly with the payout table layout!

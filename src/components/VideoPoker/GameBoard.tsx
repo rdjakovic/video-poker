@@ -66,12 +66,7 @@ const GameBoard = ({
 
   return (
     <div className="flex flex-col items-center w-full mx-auto bg-green-800 p-3 sm:p-6 rounded-lg shadow-lg relative">
-      {/* Win Notification */}
-      <WinNotification
-        handEvaluation={gameState.lastHandEvaluation}
-        isVisible={gameState.phase === "complete"}
-        onNewGame={handleNewGame}
-      />
+
 
       {/* Credits display */}
       <div className="self-end mb-2">
@@ -219,6 +214,13 @@ const GameBoard = ({
             gameMode={gameState.mode}
             currentBet={gameState.bet}
             highlightedHand={gameState.lastHandEvaluation?.rank || null}
+          />
+
+          {/* Win Notification below payout table */}
+          <WinNotification
+            handEvaluation={gameState.lastHandEvaluation}
+            isVisible={gameState.phase === "complete"}
+            onNewGame={handleNewGame}
           />
         </div>
       </div>

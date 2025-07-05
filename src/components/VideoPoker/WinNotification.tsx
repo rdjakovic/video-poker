@@ -25,15 +25,15 @@ const WinNotification: React.FC<WinNotificationProps> = ({
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.8, y: -20 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
-          className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50"
+          className="mt-4 w-full"
         >
           <Card className="bg-gradient-to-r from-yellow-400 to-yellow-600 border-4 border-yellow-300 shadow-2xl">
-            <CardContent className="p-6 text-center">
+            <CardContent className="p-4 text-center">
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ delay: 0.2, duration: 0.3 }}
-                className="text-6xl mb-4"
+                className="text-4xl mb-3"
               >
                 🎉
               </motion.div>
@@ -42,7 +42,7 @@ const WinNotification: React.FC<WinNotificationProps> = ({
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3, duration: 0.3 }}
-                className="text-3xl font-bold text-black mb-2"
+                className="text-2xl font-bold text-black mb-2"
               >
                 WINNER!
               </motion.h2>
@@ -51,7 +51,7 @@ const WinNotification: React.FC<WinNotificationProps> = ({
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4, duration: 0.3 }}
-                className="text-xl font-semibold text-black mb-2"
+                className="text-lg font-semibold text-black mb-2"
               >
                 {handEvaluation.description}
               </motion.p>
@@ -60,7 +60,7 @@ const WinNotification: React.FC<WinNotificationProps> = ({
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5, duration: 0.3 }}
-                className="text-2xl font-bold text-green-800 mb-4"
+                className="text-xl font-bold text-green-800 mb-3"
               >
                 You won {handEvaluation.payout} credits!
               </motion.p>
@@ -73,7 +73,7 @@ const WinNotification: React.FC<WinNotificationProps> = ({
                 >
                   <Button
                     variant="default"
-                    className="bg-green-600 hover:bg-green-700 text-white font-bold px-6 py-2"
+                    className="bg-green-600 hover:bg-green-700 text-white font-bold px-4 py-2 text-sm"
                     onClick={onNewGame}
                   >
                     New Game
