@@ -1,14 +1,25 @@
 import { useState, useCallback } from "react";
-import { GameState, GameMode, GamePhase, Card, HandEvaluation, MIN_BET, MAX_BET, BET_INCREMENT } from "@/types/game";
+import { GameState, GameMode, GamePhase, Card, HandEvaluation, MIN_BET, MAX_BET, BET_INCREMENT, Suit, Value } from "@/types/game";
 import { createDeck, shuffleDeck, dealCards } from "@/lib/gameLogic";
 import { evaluateHand } from "@/lib/handEvaluator";
+
+// Create placeholder cards for initial display (card backs)
+const createPlaceholderHand = (): Card[] => {
+  return Array.from({ length: 5 }, (_, index) => ({
+    suit: "hearts" as Suit,
+    value: "A" as Value,
+    isHeld: false,
+    isDealt: false,
+    id: `placeholder-${index}`
+  }));
+};
 
 const createInitialGameState = (mode: GameMode, initialCredits: number): GameState => ({
   credits: initialCredits,
   bet: MIN_BET,
   phase: "betting",
   mode,
-  hand: [],
+  hand: createPlaceholderHand(),
   deck: [],
   lastHandEvaluation: null,
   totalWinnings: 0,
@@ -31,7 +42,7 @@ export const useVideoPoker = (initialCredits: number = 1000) => {
   const adjustBet = useCallback((amount: number) => {
     setGameState(prev => {
       if (prev.phase !== "betting") return prev;
-      
+
       const newBet = Math.max(MIN_BET, Math.min(MAX_BET, amount));
       return {
         ...prev,
@@ -43,7 +54,7 @@ export const useVideoPoker = (initialCredits: number = 1000) => {
   const increaseBet = useCallback(() => {
     setGameState(prev => {
       if (prev.phase !== "betting") return prev;
-      
+
       const newBet = Math.min(MAX_BET, prev.bet + BET_INCREMENT);
       return {
         ...prev,
@@ -55,7 +66,7 @@ export const useVideoPoker = (initialCredits: number = 1000) => {
   const decreaseBet = useCallback(() => {
     setGameState(prev => {
       if (prev.phase !== "betting") return prev;
-      
+
       const newBet = Math.max(MIN_BET, prev.bet - BET_INCREMENT);
       return {
         ...prev,
@@ -67,7 +78,7 @@ export const useVideoPoker = (initialCredits: number = 1000) => {
   const setMaxBet = useCallback(() => {
     setGameState(prev => {
       if (prev.phase !== "betting") return prev;
-      
+
       return {
         ...prev,
         bet: MAX_BET,
@@ -122,7 +133,7 @@ export const useVideoPoker = (initialCredits: number = 1000) => {
 
       let newDeck = [...prev.deck];
       const newHand = [...prev.hand];
-      
+
       // Replace non-held cards
       for (let i = 0; i < newHand.length; i++) {
         if (!newHand[i].isHeld && newDeck.length > 0) {
@@ -157,7 +168,7 @@ export const useVideoPoker = (initialCredits: number = 1000) => {
     setGameState(prev => ({
       ...prev,
       phase: "betting",
-      hand: [],
+      hand: createPlaceholderHand(),
       deck: [],
       lastHandEvaluation: null,
     }));

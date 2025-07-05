@@ -1,16 +1,19 @@
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { HandEvaluation } from "@/types/game";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface WinNotificationProps {
   handEvaluation: HandEvaluation | null;
   isVisible: boolean;
+  onNewGame?: () => void;
 }
 
 const WinNotification: React.FC<WinNotificationProps> = ({
   handEvaluation,
   isVisible,
+  onNewGame,
 }) => {
   if (!handEvaluation || !isVisible) return null;
 
@@ -34,7 +37,7 @@ const WinNotification: React.FC<WinNotificationProps> = ({
               >
                 🎉
               </motion.div>
-              
+
               <motion.h2
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -43,7 +46,7 @@ const WinNotification: React.FC<WinNotificationProps> = ({
               >
                 WINNER!
               </motion.h2>
-              
+
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -52,15 +55,31 @@ const WinNotification: React.FC<WinNotificationProps> = ({
               >
                 {handEvaluation.description}
               </motion.p>
-              
+
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5, duration: 0.3 }}
-                className="text-2xl font-bold text-green-800"
+                className="text-2xl font-bold text-green-800 mb-4"
               >
                 You won {handEvaluation.payout} credits!
               </motion.p>
+
+              {onNewGame && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.6, duration: 0.3 }}
+                >
+                  <Button
+                    variant="default"
+                    className="bg-green-600 hover:bg-green-700 text-white font-bold px-6 py-2"
+                    onClick={onNewGame}
+                  >
+                    New Game
+                  </Button>
+                </motion.div>
+              )}
             </CardContent>
           </Card>
         </motion.div>

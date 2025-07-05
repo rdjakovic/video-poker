@@ -37,26 +37,15 @@ const GameBoard = ({
     }
   }, [gameState.credits, initialCredits, onCreditsChange]);
 
+  const handleNewGame = () => {
+    actions.newGame();
+  };
+
   const handleDeal = () => {
     if (gameState.phase === "betting") {
       actions.dealHand();
     } else if (gameState.phase === "dealt") {
       actions.drawCards();
-    } else if (gameState.phase === "complete") {
-      actions.newGame();
-    }
-  };
-
-  const getButtonText = () => {
-    switch (gameState.phase) {
-      case "betting":
-        return "Deal";
-      case "dealt":
-        return "Draw";
-      case "complete":
-        return "New Game";
-      default:
-        return "Deal";
     }
   };
 
@@ -81,11 +70,16 @@ const GameBoard = ({
       <WinNotification
         handEvaluation={gameState.lastHandEvaluation}
         isVisible={gameState.phase === "complete"}
+        onNewGame={handleNewGame}
       />
 
       {/* Credits display */}
-      <div className="self-end text-white mb-2">
-        <span className="font-bold text-sm sm:text-base">Credits: {gameState.credits}</span>
+      <div className="self-end mb-2">
+        <div className="bg-green-700 border-2 border-yellow-400 rounded-lg px-4 py-2 shadow-lg">
+          <span className="text-yellow-400 font-bold text-lg sm:text-xl">
+            Credits: <span className="text-white">{gameState.credits}</span>
+          </span>
+        </div>
       </div>
 
       <div className="flex flex-col lg:flex-row w-full gap-4">
@@ -117,23 +111,43 @@ const GameBoard = ({
             showBacks={gameState.phase === "betting"}
           />
 
-          {/* Deal/Draw button */}
-          <div className="flex justify-center mt-4 mb-4">
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ duration: 0.1 }}
-            >
-              <Button
-                variant="outline"
-                className="bg-gray-800 text-white hover:bg-gray-700 border-gray-600 text-lg px-8 py-3"
-                onClick={handleDeal}
-                disabled={gameState.phase === "betting" && !computed.canAffordBet}
+          {/* Auto-play logic for Deal and Draw */}
+          {gameState.phase === "betting" && (
+            <div className="flex justify-center mt-4 mb-4">
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                transition={{ duration: 0.1 }}
               >
-                {getButtonText()}
-              </Button>
-            </motion.div>
-          </div>
+                <Button
+                  variant="outline"
+                  className="bg-blue-600 text-white hover:bg-blue-700 border-blue-500 text-lg px-8 py-3"
+                  onClick={handleDeal}
+                  disabled={!computed.canAffordBet}
+                >
+                  Deal Cards
+                </Button>
+              </motion.div>
+            </div>
+          )}
+
+          {gameState.phase === "dealt" && (
+            <div className="flex justify-center mt-4 mb-4">
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                transition={{ duration: 0.1 }}
+              >
+                <Button
+                  variant="outline"
+                  className="bg-purple-600 text-white hover:bg-purple-700 border-purple-500 text-lg px-8 py-3"
+                  onClick={handleDeal}
+                >
+                  Draw Cards
+                </Button>
+              </motion.div>
+            </div>
+          )}
 
           {/* Bet controls */}
           <div className="flex flex-col sm:flex-row justify-between items-center bg-green-900 p-3 sm:p-4 rounded-lg gap-4">
@@ -178,21 +192,16 @@ const GameBoard = ({
 
             <div className="flex-1 flex flex-col sm:flex-row justify-center sm:justify-end items-center gap-4">
               <div className="text-center sm:text-right">
-                <h3 className="text-white text-sm sm:text-base">Credits</h3>
-                <div className="flex items-center justify-center sm:justify-end">
-                  <span className="text-yellow-400 text-lg sm:text-xl mr-2">💰</span>
-                  <span className="text-white text-sm sm:text-base">{gameState.credits}</span>
+                <div className="bg-green-600 border-2 border-yellow-400 rounded-lg px-3 py-2 shadow-md">
+                  <div className="flex items-center justify-center sm:justify-end">
+                    <span className="text-yellow-400 text-lg sm:text-xl mr-2">💰</span>
+                    <span className="text-yellow-400 font-bold text-sm sm:text-base mr-1">Credits:</span>
+                    <span className="text-white font-bold text-sm sm:text-base">{gameState.credits}</span>
+                  </div>
                 </div>
               </div>
 
-              <Button
-                variant="default"
-                className="bg-yellow-500 hover:bg-yellow-600 text-black text-sm sm:text-base px-4 sm:px-6"
-                onClick={handleDeal}
-                disabled={gameState.phase === "betting" && !computed.canAffordBet}
-              >
-                {getButtonText()}
-              </Button>
+
             </div>
           </div>
 

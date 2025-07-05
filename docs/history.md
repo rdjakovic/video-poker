@@ -89,3 +89,56 @@ Successfully implemented a fully functional video poker game with all features s
 - **Optimized Imports**: Removed unused imports for cleaner code
 
 The game is now fully playable with all features from the PRD implemented and enhanced UI for better user experience!
+
+## 2025-07-05 - Card Back Display Enhancement
+
+### Summary
+Enhanced the game's initial visual presentation by showing card backs instead of empty background at game start and when clicking "New Game". Removed Deal/Draw buttons with black background and implemented cleaner button system.
+
+### Changes Made
+- **Card Back Display**: Modified game to show 5 card backs during betting phase instead of empty background
+- **Placeholder Cards**: Added `createPlaceholderHand()` function to generate placeholder cards with `isDealt: false`
+- **Button System Overhaul**:
+  - Removed Deal/Draw buttons with black background
+  - Added conditional buttons: "Deal Cards" (blue), "Draw Cards" (purple), "New Game" (yellow)
+  - Each button appears only in appropriate game phase
+- **Enhanced User Experience**: Game now provides immediate visual feedback that it's a card game
+
+### Technical Implementation
+- **useVideoPoker Hook**: Updated initial state and newGame function to include placeholder cards
+- **GameBoard Component**: Replaced single Deal/Draw button with phase-specific buttons
+- **Card Display Logic**: Leveraged existing card back rendering when `isDealt: false`
+- **Type Safety**: Added proper imports for Suit and Value types
+
+### Files Modified
+- `src/hooks/useVideoPoker.ts` - Added placeholder card functionality
+- `src/components/VideoPoker/GameBoard.tsx` - Updated button system and display logic
+
+The game now provides a much more polished initial experience with card backs visible from the start!
+
+## 2025-07-05 - Credits Display & Win Notification Enhancement
+
+### Summary
+Enhanced the credits display visibility and fixed the issue where the "New Game" button was hidden behind the win notification popup.
+
+### Changes Made
+- **Enhanced Credits Display**:
+  - Updated credits display with green background, yellow border, and yellow text for "Credits:" label
+  - Applied consistent styling to both main credits display and bet controls credits display
+  - Added shadow effects for better visual prominence
+- **Win Notification Improvement**:
+  - Added "New Game" button directly to the win notification popup
+  - Removed separate "New Game" button that was being hidden behind the notification
+  - Enhanced win notification with proper button styling and animations
+- **Better User Experience**: Players can now easily see their credits and access "New Game" functionality even when win notification is displayed
+
+### Technical Implementation
+- **GameBoard Component**: Updated credits styling with consistent green/yellow theme
+- **WinNotification Component**: Added onNewGame prop and integrated "New Game" button with proper animations
+- **Improved Accessibility**: Credits are now much more visible with proper contrast and styling
+
+### Files Modified
+- `src/components/VideoPoker/GameBoard.tsx` - Enhanced credits display and win notification integration
+- `src/components/VideoPoker/WinNotification.tsx` - Added "New Game" button functionality
+
+The game now provides better visual feedback for credits and seamless access to "New Game" functionality!
