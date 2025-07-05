@@ -111,26 +111,7 @@ const GameBoard = ({
             showBacks={gameState.phase === "betting"}
           />
 
-          {/* Auto-play logic for Deal and Draw */}
-          {gameState.phase === "betting" && (
-            <div className="flex justify-center mt-4 mb-4">
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                transition={{ duration: 0.1 }}
-              >
-                <Button
-                  variant="outline"
-                  className="bg-blue-600 text-white hover:bg-blue-700 border-blue-500 text-lg px-8 py-3"
-                  onClick={handleDeal}
-                  disabled={!computed.canAffordBet}
-                >
-                  Deal Cards
-                </Button>
-              </motion.div>
-            </div>
-          )}
-
+          {/* Auto-play logic for Draw only */}
           {gameState.phase === "dealt" && (
             <div className="flex justify-center mt-4 mb-4">
               <motion.div
@@ -201,7 +182,28 @@ const GameBoard = ({
                 </div>
               </div>
 
+              {/* Deal Cards button for betting phase */}
+              {gameState.phase === "betting" && (
+                <Button
+                  variant="default"
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2"
+                  onClick={handleDeal}
+                  disabled={!computed.canAffordBet}
+                >
+                  Deal Cards
+                </Button>
+              )}
 
+              {/* New Game button for complete phase */}
+              {gameState.phase === "complete" && (
+                <Button
+                  variant="default"
+                  className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold px-4 py-2"
+                  onClick={handleNewGame}
+                >
+                  New Game
+                </Button>
+              )}
             </div>
           </div>
 

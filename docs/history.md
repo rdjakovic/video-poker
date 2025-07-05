@@ -142,3 +142,32 @@ Enhanced the credits display visibility and fixed the issue where the "New Game"
 - `src/components/VideoPoker/WinNotification.tsx` - Added "New Game" button functionality
 
 The game now provides better visual feedback for credits and seamless access to "New Game" functionality!
+
+## 2025-07-05 - New Game Button for Losing Games
+
+### Summary
+Fixed the issue where players had no way to start a new game when they lost. Added "New Game" button to bet controls section and moved "Deal Cards" button to the same location for better consistency.
+
+### Changes Made
+- **New Game Button for Losses**: Added "New Game" button in bet controls section that appears when game is complete (both wins and losses)
+- **Relocated Deal Cards Button**: Moved "Deal Cards" button from center to bet controls section (far right) for better layout consistency
+- **Always Accessible**: "New Game" functionality is now always available when game is complete, regardless of win/loss outcome
+- **Dual Access for Wins**: Players who win can use either the "New Game" button in the win notification popup or the one in bet controls
+
+### Technical Implementation
+- **GameBoard Component**:
+  - Removed centered "Deal Cards" button
+  - Added conditional "Deal Cards" button in bet controls (betting phase)
+  - Added conditional "New Game" button in bet controls (complete phase)
+- **Better UX**: Consistent button placement and always-available new game functionality
+
+### Button Layout Now:
+- **Betting Phase**: "Deal Cards" button appears in bet controls (far right)
+- **Dealt Phase**: "Draw Cards" button appears in center
+- **Complete Phase (Win)**: "New Game" button in both win notification AND bet controls
+- **Complete Phase (Loss)**: "New Game" button in bet controls
+
+### Files Modified
+- `src/components/VideoPoker/GameBoard.tsx` - Relocated buttons and added new game functionality for losses
+
+Players can now always start a new game regardless of whether they win or lose!
