@@ -1,147 +1,165 @@
-import React, { useState } from "react";
+import React from "react";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CardHand from "./CardHand";
 import PayoutTable from "./PayoutTable";
+import WinNotification from "./WinNotification";
+import CreditsManager from "./CreditsManager";
+import GameStatus from "./GameStatus";
 import { MinusIcon, PlusIcon } from "lucide-react";
+import { useVideoPoker } from "@/hooks/useVideoPoker";
+import { GameMode } from "@/types/game";
+import { motion } from "framer-motion";
 
 interface GameBoardProps {
   initialCredits?: number;
+  gameMode?: GameMode;
+  onCreditsChange?: (amount: number) => void;
 }
 
-const GameBoard = ({ initialCredits = 1000 }: GameBoardProps) => {
-  // Game state
-  const [credits, setCredits] = useState(initialCredits);
-  const [bet, setBet] = useState(10);
-  const [gameMode, setGameMode] = useState("regular");
-  const [isDealt, setIsDealt] = useState(false);
+const GameBoard = ({
+  initialCredits = 1000,
+  gameMode = "regular",
+  onCreditsChange
+}: GameBoardProps) => {
+  const { gameState, actions, computed } = useVideoPoker(initialCredits);
 
-  // Mock cards for UI scaffolding
-  const mockCards = [
-    { suit: "diamonds", value: "3", isHeld: false },
-    { suit: "spades", value: "K", isHeld: false },
-    { suit: "spades", value: "6", isHeld: false },
-    { suit: "diamonds", value: "6", isHeld: false },
-    { suit: "spades", value: "6", isHeld: false },
-  ];
+  // Sync with parent component's game mode if provided
+  React.useEffect(() => {
+    if (gameMode !== gameState.mode) {
+      actions.changeGameMode(gameMode);
+    }
+  }, [gameMode, gameState.mode, actions]);
 
-  const [cards, setCards] = useState(mockCards);
+  // Notify parent of credits changes
+  React.useEffect(() => {
+    if (onCreditsChange) {
+      onCreditsChange(gameState.credits - initialCredits);
+    }
+  }, [gameState.credits, initialCredits, onCreditsChange]);
 
-  // Handle bet changes
-  const increaseBet = () => {
-    if (bet < 100) setBet(bet + 5);
-  };
-
-  const decreaseBet = () => {
-    if (bet > 5) setBet(bet - 5);
-  };
-
-  const maxBet = () => {
-    setBet(100);
-  };
-
-  // Handle game actions
   const handleDeal = () => {
-    if (!isDealt) {
-      // Initial deal
-      setCredits(credits - bet);
-      setIsDealt(true);
-      // In a real implementation, we would deal cards here
-    } else {
-      // Draw new cards
-      setIsDealt(false);
-      // In a real implementation, we would evaluate the hand and award winnings here
+    if (gameState.phase === "betting") {
+      actions.dealHand();
+    } else if (gameState.phase === "dealt") {
+      actions.drawCards();
+    } else if (gameState.phase === "complete") {
+      actions.newGame();
     }
   };
 
-  const handleCardClick = (index: number) => {
-    if (isDealt) {
-      const updatedCards = [...cards];
-      updatedCards[index].isHeld = !updatedCards[index].isHeld;
-      setCards(updatedCards);
+  const getButtonText = () => {
+    switch (gameState.phase) {
+      case "betting":
+        return "Deal";
+      case "dealt":
+        return "Draw";
+      case "complete":
+        return "New Game";
+      default:
+        return "Deal";
     }
   };
 
-  const handleGameModeChange = (mode: string) => {
-    setGameMode(mode);
-    setIsDealt(false);
-    // Reset the game when changing modes
+  const getInstructionText = () => {
+    switch (gameState.phase) {
+      case "betting":
+        return "Place your bet and deal cards!";
+      case "dealt":
+        return "Select cards to hold before drawing. Good luck!";
+      case "complete":
+        return gameState.lastHandEvaluation?.isWinning
+          ? `${gameState.lastHandEvaluation.description} - You won ${gameState.lastHandEvaluation.payout} credits!`
+          : "Better luck next time!";
+      default:
+        return "Place your bet and deal cards!";
+    }
   };
 
   return (
-    <div className="flex flex-col items-center w-full max-w-5xl mx-auto bg-green-800 p-6 rounded-lg shadow-lg">
-      {/* Game title */}
-      <h1 className="text-3xl font-bold text-yellow-400 mb-4">Video Poker</h1>
-
-      {/* Game mode selection */}
-      <Tabs
-        defaultValue="regular"
-        className="w-full max-w-md mb-4"
-        onValueChange={handleGameModeChange}
-      >
-        <TabsList className="grid grid-cols-3 w-full bg-green-700">
-          <TabsTrigger value="regular" className="text-white">
-            Regular 5 Card Draw
-          </TabsTrigger>
-          <TabsTrigger value="jokers" className="text-white">
-            Joker's Wild
-          </TabsTrigger>
-          <TabsTrigger value="deuces" className="text-white">
-            Deuces Wild
-          </TabsTrigger>
-        </TabsList>
-      </Tabs>
+    <div className="flex flex-col items-center w-full mx-auto bg-green-800 p-3 sm:p-6 rounded-lg shadow-lg relative">
+      {/* Win Notification */}
+      <WinNotification
+        handEvaluation={gameState.lastHandEvaluation}
+        isVisible={gameState.phase === "complete"}
+      />
 
       {/* Credits display */}
       <div className="self-end text-white mb-2">
-        <span className="font-bold">Credits: {credits}</span>
+        <span className="font-bold text-sm sm:text-base">Credits: {gameState.credits}</span>
       </div>
 
-      <div className="flex w-full gap-4">
-        <div className="flex-1 bg-green-700 border-2 border-yellow-500 rounded-lg p-4">
-          {/* Main game area */}
-          <div className="text-center text-white mb-4">
-            <h2 className="text-xl">Place Your Bet and Deal</h2>
+      <div className="flex flex-col lg:flex-row w-full gap-4">
+        <div className="flex-1 bg-green-700 border-2 border-yellow-500 rounded-lg p-3 sm:p-4">
+          {/* Credits Manager */}
+          <div className="mb-4">
+            <CreditsManager
+              currentCredits={gameState.credits}
+              onAddCredits={actions.addCredits}
+              minBet={gameState.bet}
+            />
+          </div>
+
+          {/* Game Status */}
+          <div className="mb-4">
+            <GameStatus
+              phase={gameState.phase}
+              handEvaluation={gameState.lastHandEvaluation}
+              credits={gameState.credits}
+              bet={gameState.bet}
+            />
           </div>
 
           {/* Card display */}
-          <CardHand cards={cards} onCardClick={handleCardClick} />
+          <CardHand
+            cards={gameState.hand}
+            onCardClick={actions.toggleHold}
+            canHold={gameState.phase === "dealt"}
+            showBacks={gameState.phase === "betting"}
+          />
 
           {/* Deal/Draw button */}
           <div className="flex justify-center mt-4 mb-4">
-            <Button
-              variant="outline"
-              className="bg-gray-800 text-white hover:bg-gray-700 border-gray-600"
-              onClick={handleDeal}
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ duration: 0.1 }}
             >
-              {isDealt ? "Draw" : "Deal"}
-            </Button>
+              <Button
+                variant="outline"
+                className="bg-gray-800 text-white hover:bg-gray-700 border-gray-600 text-lg px-8 py-3"
+                onClick={handleDeal}
+                disabled={gameState.phase === "betting" && !computed.canAffordBet}
+              >
+                {getButtonText()}
+              </Button>
+            </motion.div>
           </div>
 
           {/* Bet controls */}
-          <div className="flex justify-between items-center bg-green-900 p-4 rounded-lg">
-            <div className="flex-1">
-              <h3 className="text-white mb-2">Bet Controls</h3>
-              <div className="flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row justify-between items-center bg-green-900 p-3 sm:p-4 rounded-lg gap-4">
+            <div className="flex-1 w-full sm:w-auto">
+              <h3 className="text-white mb-2 text-sm sm:text-base">Bet Controls</h3>
+              <div className="flex items-center justify-center sm:justify-start gap-2">
                 <Button
                   variant="outline"
                   size="sm"
                   className="bg-gray-700 text-white"
-                  onClick={decreaseBet}
+                  onClick={actions.decreaseBet}
+                  disabled={gameState.phase !== "betting"}
                 >
                   <MinusIcon className="h-4 w-4" />
                 </Button>
 
                 <div className="bg-gray-800 text-white px-4 py-1 rounded-md min-w-16 text-center">
-                  {bet}
+                  {gameState.bet}
                 </div>
 
                 <Button
                   variant="outline"
                   size="sm"
                   className="bg-gray-700 text-white"
-                  onClick={increaseBet}
+                  onClick={actions.increaseBet}
+                  disabled={gameState.phase !== "betting"}
                 >
                   <PlusIcon className="h-4 w-4" />
                 </Button>
@@ -150,41 +168,47 @@ const GameBoard = ({ initialCredits = 1000 }: GameBoardProps) => {
                   variant="destructive"
                   size="sm"
                   className="ml-2"
-                  onClick={maxBet}
+                  onClick={actions.setMaxBet}
+                  disabled={gameState.phase !== "betting"}
                 >
                   Max Bet
                 </Button>
               </div>
             </div>
 
-            <div className="flex-1 flex justify-end items-center">
-              <div className="mr-4">
-                <h3 className="text-white">Credits</h3>
-                <div className="flex items-center">
-                  <span className="text-yellow-400 text-xl mr-2">💰</span>
-                  <span className="text-white">{credits}</span>
+            <div className="flex-1 flex flex-col sm:flex-row justify-center sm:justify-end items-center gap-4">
+              <div className="text-center sm:text-right">
+                <h3 className="text-white text-sm sm:text-base">Credits</h3>
+                <div className="flex items-center justify-center sm:justify-end">
+                  <span className="text-yellow-400 text-lg sm:text-xl mr-2">💰</span>
+                  <span className="text-white text-sm sm:text-base">{gameState.credits}</span>
                 </div>
               </div>
 
               <Button
                 variant="default"
-                className="bg-yellow-500 hover:bg-yellow-600 text-black"
+                className="bg-yellow-500 hover:bg-yellow-600 text-black text-sm sm:text-base px-4 sm:px-6"
                 onClick={handleDeal}
+                disabled={gameState.phase === "betting" && !computed.canAffordBet}
               >
-                Deal
+                {getButtonText()}
               </Button>
             </div>
           </div>
 
           {/* Instructions */}
           <div className="text-center text-white text-sm mt-4">
-            <p>Select cards to hold before drawing. Good luck!</p>
+            <p>{getInstructionText()}</p>
           </div>
         </div>
 
         {/* Payout table */}
-        <div className="w-64">
-          <PayoutTable gameMode={gameMode} currentBet={bet} />
+        <div className="w-full lg:w-64 lg:flex-shrink-0">
+          <PayoutTable
+            gameMode={gameState.mode}
+            currentBet={gameState.bet}
+            highlightedHand={gameState.lastHandEvaluation?.rank || null}
+          />
         </div>
       </div>
     </div>

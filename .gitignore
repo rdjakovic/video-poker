@@ -34,3 +34,8 @@ core
 .github/
 
 
+node_modules/.vite/deps/_metadata.json
+node_modules/.vite/deps/react_jsx-runtime.js
+node_modules/.vite/deps/react_jsx-runtime.js.map
+node_modules/.vite/deps/tempo-devtools.js
+node_modules/.vite/deps/tempo-devtools.js.map
