@@ -122,7 +122,7 @@ const CardHand: React.FC<CardHandProps> = ({
 
   return (
     <motion.div
-      className="bg-green-800 p-6 rounded-lg"
+      className="bg-green-800 p-6 rounded-lg mb-4"
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.3 }}
@@ -143,6 +143,7 @@ const CardHand: React.FC<CardHandProps> = ({
           ))}
         </AnimatePresence>
       </div>
+      {/** 
       {canHold && (
         <motion.div
           className="text-center text-white text-sm mt-2"
@@ -153,6 +154,7 @@ const CardHand: React.FC<CardHandProps> = ({
           Select cards to hold before drawing. Good luck!
         </motion.div>
       )}
+      */}
     </motion.div>
   );
 };

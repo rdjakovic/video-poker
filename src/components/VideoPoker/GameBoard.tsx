@@ -19,7 +19,7 @@ interface GameBoardProps {
 const GameBoard = ({
   initialCredits = 1000,
   gameMode = "regular",
-  onCreditsChange
+  onCreditsChange,
 }: GameBoardProps) => {
   const { gameState, actions, computed } = useVideoPoker(initialCredits);
 
@@ -66,8 +66,6 @@ const GameBoard = ({
 
   return (
     <div className="flex flex-col items-center w-full mx-auto bg-green-800 p-3 sm:p-6 rounded-lg shadow-lg relative">
-
-
       {/* Credits display */}
       <div className="self-end mb-2">
         <div className="bg-green-700 border-2 border-yellow-400 rounded-lg px-4 py-2 shadow-lg">
@@ -107,6 +105,7 @@ const GameBoard = ({
           />
 
           {/* Auto-play logic for Draw only */}
+          {/* 
           {gameState.phase === "dealt" && (
             <div className="flex justify-center mt-4 mb-4">
               <motion.div
@@ -124,11 +123,14 @@ const GameBoard = ({
               </motion.div>
             </div>
           )}
+          */}
 
           {/* Bet controls */}
           <div className="flex flex-col sm:flex-row justify-between items-center bg-green-900 p-3 sm:p-4 rounded-lg gap-4">
-            <div className="flex-1 w-full sm:w-auto">
-              <h3 className="text-white mb-2 text-sm sm:text-base">Bet Controls</h3>
+            <div className="w-full sm:flex-[2]">
+              <h3 className="text-white mb-2 text-sm sm:text-base">
+                Bet Controls
+              </h3>
               <div className="flex items-center justify-center sm:justify-start gap-2">
                 <Button
                   variant="outline"
@@ -166,39 +168,75 @@ const GameBoard = ({
               </div>
             </div>
 
-            <div className="flex-1 flex flex-col sm:flex-row justify-center sm:justify-end items-center gap-4">
-              <div className="text-center sm:text-right">
-                <div className="bg-green-600 border-2 border-yellow-400 rounded-lg px-3 py-2 shadow-md">
-                  <div className="flex items-center justify-center sm:justify-end">
-                    <span className="text-yellow-400 text-lg sm:text-xl mr-2">💰</span>
-                    <span className="text-yellow-400 font-bold text-sm sm:text-base mr-1">Credits:</span>
-                    <span className="text-white font-bold text-sm sm:text-base">{gameState.credits}</span>
+            {/* Right side - credits and Deal button*/}
+            <div className="w-full sm:flex-[1]">
+              <div className="flex justify-between">
+                <div>
+                  <h3 className="text-white mb-2 text-sm sm:text-base">
+                    Credits
+                  </h3>
+                  <div className="flex items-center justify-center sm:justify-between gap-2">
+                    <div className="text-center sm:text-right">
+                      <div className="bg-black rounded-lg px-3 py-2 shadow-md">
+                        <div className="flex items-center justify-center sm:justify-end -my-1">
+                          <span className="text-yellow-400 text-lg sm:text-xl mr-2">
+                            💰
+                          </span>
+                          <span className="text-yellow-400 font-bold text-sm sm:text-base">
+                            {gameState.credits}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
+                <div className="flex items-end">
+                  {/* Deal Cards button for betting phase */}
+                  {gameState.phase === "betting" && (
+                    <Button
+                      variant="default"
+                      size="lg"
+                      className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2"
+                      onClick={handleDeal}
+                      disabled={!computed.canAffordBet}
+                    >
+                      Deal Cards
+                    </Button>
+                  )}
+
+                  {/* Auto-play logic for Draw only */}
+                  {gameState.phase === "dealt" && (
+                    <div className="flex justify-center">
+                      <motion.div
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        transition={{ duration: 0.1 }}
+                      >
+                        <Button
+                          variant="outline"
+                          size="lg"
+                          className="bg-purple-600 text-white hover:bg-purple-700 border-purple-500 text-lg px-4 py-2"
+                          onClick={handleDeal}
+                        >
+                          Draw Cards
+                        </Button>
+                      </motion.div>
+                    </div>
+                  )}
+
+                  {/* New Game button for complete phase */}
+                  {gameState.phase === "complete" && (
+                    <Button
+                      variant="default"
+                      size="lg"
+                      className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold px-4 py-2"
+                      onClick={handleNewGame}
+                    >
+                      New Game
+                    </Button>
+                  )}
+                </div>
               </div>
-
-              {/* Deal Cards button for betting phase */}
-              {gameState.phase === "betting" && (
-                <Button
-                  variant="default"
-                  className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2"
-                  onClick={handleDeal}
-                  disabled={!computed.canAffordBet}
-                >
-                  Deal Cards
-                </Button>
-              )}
-
-              {/* New Game button for complete phase */}
-              {gameState.phase === "complete" && (
-                <Button
-                  variant="default"
-                  className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold px-4 py-2"
-                  onClick={handleNewGame}
-                >
-                  New Game
-                </Button>
-              )}
             </div>
           </div>
 
