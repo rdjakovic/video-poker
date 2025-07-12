@@ -81,10 +81,6 @@ const Home = () => {
           </div>
         </CardContent>
       </Card>
-
-      <div className="mt-4 text-white text-sm">
-        <p>Select cards to hold before drawing. Good luck!</p>
-      </div>
     </div>
   );
 };

@@ -208,3 +208,56 @@ Moved the winner notification section from a centered popup overlay to a positio
 - `src/components/VideoPoker/WinNotification.tsx` - Updated positioning and sizing for sidebar layout
 
 The winner section now integrates seamlessly with the payout table layout!
+
+## 2025-07-05 - Visual Highlighting for Winning Cards
+
+### Summary
+Added visual highlighting and pulsing animation to winning cards when a player wins, making it clear which cards contributed to the winning hand.
+
+### Changes Made
+- **Winning Card Identification**: Extended HandEvaluation interface to include winningCardIndices array
+- **Card Highlighting Logic**: Created getWinningCardIndices function to identify which cards contribute to each winning hand type
+- **Visual Effects**: Added pulsing animation, golden borders, shadows, and ring effects to winning cards
+- **Slow Pulse Animation**: Implemented 2-second duration pulsing with smooth glow effects
+- **Hand Type Support**: Covers all poker hands including pairs, three/four of a kind, full house, flushes, straights, etc.
+
+### Technical Implementation
+- **Types Extended**:
+  - Added `winningCardIndices?: number[]` to HandEvaluation interface
+- **Hand Evaluator Enhanced**:
+  - Created `getWinningCardIndices()` function with logic for each hand rank
+  - Updated `evaluateHand()` to return winning card indices
+- **Card Components Updated**:
+  - Added `isWinning` prop to PlayingCard component
+  - Enhanced CardHand to accept and pass winning card information
+  - Added motion.div wrapper with pulsing boxShadow and scale animations
+- **Visual Styling**:
+  - Golden border (`border-yellow-400`)
+  - Enhanced shadow (`shadow-2xl shadow-yellow-400/50`)
+  - Ring effect (`ring-2 ring-yellow-300`)
+  - Pulsing glow animation (2-second duration, infinite repeat)
+
+### Animation Details:
+- **Duration**: 2 seconds per pulse cycle
+- **Effects**:
+  - Glowing shadow that pulses from 20px to 40px
+  - Subtle scale animation (1.0 to 1.02)
+  - Smooth easeInOut transition
+  - Infinite repeat for continuous celebration
+- **Colors**: Golden yellow theme matching the casino aesthetic
+
+### Hand Recognition:
+- **Pairs/Jacks or Better**: Highlights the matching cards
+- **Two Pair**: Highlights both pairs
+- **Three/Four of a Kind**: Highlights the matching cards
+- **Full House**: Highlights all cards (three of a kind + pair)
+- **Flushes/Straights**: Highlights all 5 cards
+- **Wild Cards**: Always included in winning combinations
+
+### Files Modified
+- `src/types/game.ts` - Extended HandEvaluation interface
+- `src/lib/handEvaluator.ts` - Added winning card identification logic
+- `src/components/VideoPoker/CardHand.tsx` - Added visual effects and animations
+- `src/components/VideoPoker/GameBoard.tsx` - Pass winning card data to CardHand
+
+Players can now clearly see which cards contributed to their winning hand with beautiful pulsing animations!

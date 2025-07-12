@@ -77,16 +77,31 @@ const PlayingCard: React.FC<PlayingCardProps> = ({
         }
         transition={{ duration: 0.8, ease: "easeOut" }}
       >
-        <Card
-          className={`w-20 h-28 sm:w-32 sm:h-44 flex flex-col justify-between p-1 sm:p-2 bg-white border-2 cursor-pointer transition-all duration-200 ${
-            isWinning
-              ? "border-yellow-400 shadow-2xl shadow-yellow-400/50 ring-2 ring-yellow-300 animate-pulse"
-              : isHeld
-              ? "border-yellow-400 shadow-lg"
-              : "border-gray-200 hover:border-gray-400"
-          }`}
-          onClick={() => onToggleHold(index)}
+        <motion.div
+          animate={isWinning ? {
+            boxShadow: [
+              "0 0 20px 5px rgba(255, 215, 0, 0.8)",
+              "0 0 40px 10px rgba(255, 215, 0, 0.4)",
+              "0 0 20px 5px rgba(255, 215, 0, 0.8)"
+            ],
+            scale: [1, 1.02, 1]
+          } : {}}
+          transition={isWinning ? {
+            duration: 1,
+            repeat: Infinity,
+            ease: "easeInOut"
+          } : {}}
         >
+          <Card
+            className={`w-20 h-28 sm:w-32 sm:h-44 flex flex-col justify-between p-1 sm:p-2 bg-white border-2 cursor-pointer transition-all duration-200 ${
+              isWinning
+                ? "border-yellow-400 shadow-2xl shadow-yellow-400/50 ring-2 ring-yellow-300"
+                : isHeld
+                ? "border-yellow-400 shadow-lg"
+                : "border-gray-200 hover:border-gray-400"
+            }`}
+            onClick={() => onToggleHold(index)}
+          >
           <CardContent className="p-0 flex flex-col h-full justify-between">
             <div className={`text-sm sm:text-lg font-bold ${suitColor}`}>
               <div className="flex flex-col items-start">
@@ -105,6 +120,7 @@ const PlayingCard: React.FC<PlayingCardProps> = ({
             </div>
           </CardContent>
         </Card>
+        </motion.div>
         {isHeld && (
           <motion.div
             className="absolute -bottom-6 left-0 right-0 flex justify-center"
