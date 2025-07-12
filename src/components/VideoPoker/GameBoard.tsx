@@ -102,10 +102,11 @@ const GameBoard = ({
             onCardClick={actions.toggleHold}
             canHold={gameState.phase === "dealt"}
             showBacks={gameState.phase === "betting"}
+            winningCardIndices={gameState.lastHandEvaluation?.winningCardIndices || []}
           />
 
           {/* Auto-play logic for Draw only */}
-          {/* 
+          {/*
           {gameState.phase === "dealt" && (
             <div className="flex justify-center mt-4 mb-4">
               <motion.div

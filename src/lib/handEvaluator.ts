@@ -77,6 +77,80 @@ const isRoyalFlush = (cards: Card[], gameMode: GameMode): boolean => {
   return hasRoyalCards.length + wildCount >= 5 && missingRoyalCards.length <= wildCount;
 };
 
+// Identify which cards contribute to the winning hand
+const getWinningCardIndices = (cards: Card[], rank: HandRank, gameMode: GameMode): number[] => {
+  if (rank === "high-card") return [];
+
+  const wildCardIndices = cards.map((card, index) => ({ card, index }))
+    .filter(({ card }) => isWildCard(card, gameMode))
+    .map(({ index }) => index);
+
+  // For flush, straight-flush, and royal-flush, all cards contribute
+  if (rank === "flush" || rank === "straight-flush" || rank === "royal-flush" || rank === "straight") {
+    return [0, 1, 2, 3, 4];
+  }
+
+  // For five of a kind, all cards contribute
+  if (rank === "five-of-a-kind") {
+    return [0, 1, 2, 3, 4];
+  }
+
+  const valueCounts = getValueCounts(cards, gameMode);
+  const sortedCounts = Array.from(valueCounts.entries()).sort((a, b) => b[1] - a[1]);
+
+  // For pairs, three/four of a kind, full house, two pair
+  const winningIndices: number[] = [...wildCardIndices]; // Always include wild cards
+
+  if (rank === "four-of-a-kind") {
+    // Find the value that appears most frequently (should be 4 times with wilds)
+    const fourOfAKindValue = sortedCounts[0][0];
+    cards.forEach((card, index) => {
+      if (!isWildCard(card, gameMode) && getCardValue(card) === fourOfAKindValue) {
+        winningIndices.push(index);
+      }
+    });
+  } else if (rank === "full-house") {
+    // Include cards from both the three of a kind and the pair
+    const threeOfAKindValue = sortedCounts[0][0];
+    const pairValue = sortedCounts[1][0];
+    cards.forEach((card, index) => {
+      if (!isWildCard(card, gameMode)) {
+        const cardValue = getCardValue(card);
+        if (cardValue === threeOfAKindValue || cardValue === pairValue) {
+          winningIndices.push(index);
+        }
+      }
+    });
+  } else if (rank === "three-of-a-kind") {
+    const threeOfAKindValue = sortedCounts[0][0];
+    cards.forEach((card, index) => {
+      if (!isWildCard(card, gameMode) && getCardValue(card) === threeOfAKindValue) {
+        winningIndices.push(index);
+      }
+    });
+  } else if (rank === "two-pair") {
+    const firstPairValue = sortedCounts[0][0];
+    const secondPairValue = sortedCounts[1][0];
+    cards.forEach((card, index) => {
+      if (!isWildCard(card, gameMode)) {
+        const cardValue = getCardValue(card);
+        if (cardValue === firstPairValue || cardValue === secondPairValue) {
+          winningIndices.push(index);
+        }
+      }
+    });
+  } else if (rank === "pair" || rank === "jacks-or-better") {
+    const pairValue = sortedCounts[0][0];
+    cards.forEach((card, index) => {
+      if (!isWildCard(card, gameMode) && getCardValue(card) === pairValue) {
+        winningIndices.push(index);
+      }
+    });
+  }
+
+  return winningIndices.sort((a, b) => a - b);
+};
+
 // Evaluate poker hand
 export const evaluateHand = (cards: Card[], gameMode: GameMode, bet: number): HandEvaluation => {
   if (cards.length !== 5) {
@@ -167,10 +241,13 @@ export const evaluateHand = (cards: Card[], gameMode: GameMode, bet: number): Ha
     payout = (payoutTable["pair"] || 0) * bet;
   }
 
+  const winningCardIndices = payout > 0 ? getWinningCardIndices(cards, rank, gameMode) : [];
+
   return {
     rank,
     description: getHandDescription(rank),
     payout,
-    isWinning: payout > 0
+    isWinning: payout > 0,
+    winningCardIndices
   };
 };

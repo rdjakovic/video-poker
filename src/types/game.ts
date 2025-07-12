@@ -13,7 +13,7 @@ export type GameMode = "regular" | "jokers" | "deuces";
 
 export type GamePhase = "betting" | "dealt" | "drawing" | "complete";
 
-export type HandRank = 
+export type HandRank =
   | "high-card"
   | "pair"
   | "two-pair"
@@ -32,6 +32,7 @@ export interface HandEvaluation {
   description: string;
   payout: number;
   isWinning: boolean;
+  winningCardIndices?: number[]; // Indices of cards that contribute to the winning hand
 }
 
 export interface GameState {

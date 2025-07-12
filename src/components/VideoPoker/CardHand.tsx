@@ -12,6 +12,7 @@ interface PlayingCardProps {
   showBack?: boolean;
   index: number;
   onToggleHold: (index: number) => void;
+  isWinning?: boolean;
 }
 
 interface CardHandProps {
@@ -19,6 +20,7 @@ interface CardHandProps {
   canHold?: boolean;
   showBacks?: boolean;
   onCardClick?: (index: number) => void;
+  winningCardIndices?: number[];
 }
 
 const PlayingCard: React.FC<PlayingCardProps> = ({
@@ -29,6 +31,7 @@ const PlayingCard: React.FC<PlayingCardProps> = ({
   showBack = false,
   index,
   onToggleHold,
+  isWinning = false,
 }) => {
   const suitSymbol = {
     hearts: "♥",
@@ -65,12 +68,22 @@ const PlayingCard: React.FC<PlayingCardProps> = ({
       transition={{ duration: 0.6, delay: 0.3 }}
     >
       <motion.div
-        animate={isHeld ? { y: -8, scale: 1.05 } : { y: 0, scale: 1 }}
-        transition={{ duration: 0.2, ease: "easeOut" }}
+        animate={
+          isWinning
+            ? { y: -8, scale: 1.05 }
+            : isHeld
+            ? { y: -8, scale: 1.05 }
+            : { y: 0, scale: 1 }
+        }
+        transition={{ duration: 0.8, ease: "easeOut" }}
       >
         <Card
           className={`w-20 h-28 sm:w-32 sm:h-44 flex flex-col justify-between p-1 sm:p-2 bg-white border-2 cursor-pointer transition-all duration-200 ${
-            isHeld ? "border-yellow-400 shadow-lg" : "border-gray-200 hover:border-gray-400"
+            isWinning
+              ? "border-yellow-400 shadow-2xl shadow-yellow-400/50 ring-2 ring-yellow-300 animate-pulse"
+              : isHeld
+              ? "border-yellow-400 shadow-lg"
+              : "border-gray-200 hover:border-gray-400"
           }`}
           onClick={() => onToggleHold(index)}
         >
@@ -114,6 +127,7 @@ const CardHand: React.FC<CardHandProps> = ({
   canHold = true,
   showBacks = false,
   onCardClick = () => {},
+  winningCardIndices = [],
 }) => {
   const handleCardClick = (index: number) => {
     if (!canHold) return;
@@ -139,11 +153,12 @@ const CardHand: React.FC<CardHandProps> = ({
               showBack={showBacks}
               index={index}
               onToggleHold={handleCardClick}
+              isWinning={winningCardIndices.includes(index)}
             />
           ))}
         </AnimatePresence>
       </div>
-      {/** 
+      {/**
       {canHold && (
         <motion.div
           className="text-center text-white text-sm mt-2"
