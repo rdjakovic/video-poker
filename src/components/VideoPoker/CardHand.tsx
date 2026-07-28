@@ -161,7 +161,7 @@ const CardHand: React.FC<CardHandProps> = ({
       transition={{ duration: 0.3 }}
     >
       <div className="flex justify-center gap-4 mb-4">
-        <AnimatePresence mode="wait">
+        <AnimatePresence>
           {cards.map((card: GameCard, index: number) => (
             <PlayingCard
               key={card.id || `${card.suit}-${card.value}-${index}`}
