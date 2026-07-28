@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import CardBack from "./CardBack";
 import { Card as GameCard } from "@/types/game";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLanguage } from "@/i18n/useLanguage";
 
 interface PlayingCardProps {
   suit: "hearts" | "diamonds" | "clubs" | "spades";
@@ -42,6 +43,8 @@ const PlayingCard: React.FC<PlayingCardProps> = ({
 
   const suitColor =
     suit === "hearts" || suit === "diamonds" ? "text-red-600" : "text-black";
+
+  const { t } = useLanguage();
 
   if (showBack || !isDealt) {
     return (
@@ -129,7 +132,7 @@ const PlayingCard: React.FC<PlayingCardProps> = ({
             transition={{ duration: 0.2 }}
           >
             <span className="bg-yellow-400 text-black text-xs font-bold px-2 py-1 rounded-md">
-              HELD
+              {t("held")}
             </span>
           </motion.div>
         )}

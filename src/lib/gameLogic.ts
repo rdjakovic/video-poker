@@ -1,4 +1,4 @@
-import { Card, Suit, Value, GameMode, HandRank, PayoutTable } from "@/types/game";
+import { Card, Suit, Value, GameMode, PayoutTable } from "@/types/game";
 
 // Create a standard 52-card deck
 export const createDeck = (includeJokers = false): Card[] => {
@@ -114,23 +114,4 @@ export const getPayoutTable = (gameMode: GameMode): PayoutTable => {
     default:
       return {};
   }
-};
-
-// Get hand description for display
-export const getHandDescription = (rank: HandRank): string => {
-  const descriptions: Record<HandRank, string> = {
-    "high-card": "High Card",
-    "pair": "Pair",
-    "two-pair": "Two Pair",
-    "three-of-a-kind": "Three of a Kind",
-    "straight": "Straight",
-    "flush": "Flush",
-    "full-house": "Full House",
-    "four-of-a-kind": "Four of a Kind",
-    "straight-flush": "Straight Flush",
-    "royal-flush": "Royal Flush",
-    "five-of-a-kind": "Five of a Kind",
-    "jacks-or-better": "Jacks or Better"
-  };
-  return descriptions[rank] || "Unknown Hand";
 };

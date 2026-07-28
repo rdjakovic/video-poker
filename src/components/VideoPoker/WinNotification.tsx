@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { HandEvaluation } from "@/types/game";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLanguage } from "@/i18n/useLanguage";
 
 interface WinNotificationProps {
   handEvaluation: HandEvaluation | null;
@@ -15,6 +16,8 @@ const WinNotification: React.FC<WinNotificationProps> = ({
   isVisible,
   onNewGame,
 }) => {
+  const { t, tHandRank } = useLanguage();
+
   if (!handEvaluation || !isVisible) return null;
 
   return (
@@ -44,7 +47,7 @@ const WinNotification: React.FC<WinNotificationProps> = ({
                 transition={{ delay: 0.3, duration: 0.3 }}
                 className="text-2xl font-bold text-black mb-2"
               >
-                WINNER!
+                {t("winnerBanner")}
               </motion.h2>
 
               <motion.p
@@ -53,7 +56,7 @@ const WinNotification: React.FC<WinNotificationProps> = ({
                 transition={{ delay: 0.4, duration: 0.3 }}
                 className="text-lg font-semibold text-black mb-2"
               >
-                {handEvaluation.description}
+                {tHandRank(handEvaluation.rank)}
               </motion.p>
 
               <motion.p
@@ -62,7 +65,7 @@ const WinNotification: React.FC<WinNotificationProps> = ({
                 transition={{ delay: 0.5, duration: 0.3 }}
                 className="text-xl font-bold text-green-800 mb-3"
               >
-                You won {handEvaluation.payout} credits!
+                {t("wonCreditsMessage", { amount: handEvaluation.payout })}
               </motion.p>
 
               {onNewGame && (
@@ -76,7 +79,7 @@ const WinNotification: React.FC<WinNotificationProps> = ({
                     className="bg-green-600 hover:bg-green-700 text-white font-bold px-4 py-2 text-sm"
                     onClick={onNewGame}
                   >
-                    New Game
+                    {t("newGame")}
                   </Button>
                 </motion.div>
               )}

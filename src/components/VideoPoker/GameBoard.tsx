@@ -8,6 +8,7 @@ import { MinusIcon, PlusIcon } from "lucide-react";
 import { VideoPokerActions, VideoPokerComputed } from "@/hooks/useVideoPoker";
 import { GameState } from "@/types/game";
 import { motion } from "framer-motion";
+import { useLanguage } from "@/i18n/useLanguage";
 
 interface GameBoardProps {
   gameState: GameState;
@@ -16,6 +17,8 @@ interface GameBoardProps {
 }
 
 const GameBoard = ({ gameState, actions, computed }: GameBoardProps) => {
+  const { t, tHandRank } = useLanguage();
+
   const handleNewGame = () => {
     actions.newGame();
   };
@@ -31,15 +34,18 @@ const GameBoard = ({ gameState, actions, computed }: GameBoardProps) => {
   const getInstructionText = () => {
     switch (gameState.phase) {
       case "betting":
-        return "Place your bet and deal cards!";
+        return t("instructionsBetting");
       case "dealt":
-        return "Select cards to hold before drawing. Good luck!";
+        return t("instructionsDealt");
       case "complete":
         return gameState.lastHandEvaluation?.isWinning
-          ? `${gameState.lastHandEvaluation.description} - You won ${gameState.lastHandEvaluation.payout} credits!`
-          : "Better luck next time!";
+          ? t("instructionsCompleteWin", {
+              hand: tHandRank(gameState.lastHandEvaluation.rank),
+              amount: gameState.lastHandEvaluation.payout,
+            })
+          : t("instructionsCompleteLoss");
       default:
-        return "Place your bet and deal cards!";
+        return t("instructionsBetting");
     }
   };
 
@@ -49,7 +55,7 @@ const GameBoard = ({ gameState, actions, computed }: GameBoardProps) => {
       <div className="self-end mb-2">
         <div className="bg-green-700 border-2 border-yellow-400 rounded-lg px-4 py-2 shadow-lg">
           <span className="text-yellow-400 font-bold text-lg sm:text-xl">
-            Credits: <span className="text-white">{gameState.credits}</span>
+            {t("credits")}: <span className="text-white">{gameState.credits}</span>
           </span>
         </div>
       </div>
@@ -88,7 +94,7 @@ const GameBoard = ({ gameState, actions, computed }: GameBoardProps) => {
           <div className="flex flex-col sm:flex-row justify-between items-center bg-green-900 p-3 sm:p-4 rounded-lg gap-4">
             <div className="w-full sm:flex-[2]">
               <h3 className="text-white mb-2 text-sm sm:text-base">
-                Bet Controls
+                {t("betControls")}
               </h3>
               <div className="flex items-center justify-center sm:justify-start gap-2">
                 <Button
@@ -122,7 +128,7 @@ const GameBoard = ({ gameState, actions, computed }: GameBoardProps) => {
                   onClick={actions.setMaxBet}
                   disabled={gameState.phase !== "betting"}
                 >
-                  Max Bet
+                  {t("maxBet")}
                 </Button>
               </div>
             </div>
@@ -132,7 +138,7 @@ const GameBoard = ({ gameState, actions, computed }: GameBoardProps) => {
               <div className="flex justify-between">
                 <div>
                   <h3 className="text-white mb-2 text-sm sm:text-base">
-                    Credits
+                    {t("credits")}
                   </h3>
                   <div className="flex items-center justify-center sm:justify-between gap-2">
                     <div className="text-center sm:text-right">
@@ -159,7 +165,7 @@ const GameBoard = ({ gameState, actions, computed }: GameBoardProps) => {
                       onClick={handleDeal}
                       disabled={!computed.canAffordBet}
                     >
-                      Deal Cards
+                      {t("dealCards")}
                     </Button>
                   )}
 
@@ -177,7 +183,7 @@ const GameBoard = ({ gameState, actions, computed }: GameBoardProps) => {
                           className="bg-purple-600 text-white hover:bg-purple-700 border-purple-500 text-lg px-4 py-2"
                           onClick={handleDeal}
                         >
-                          Draw Cards
+                          {t("drawCards")}
                         </Button>
                       </motion.div>
                     </div>
@@ -191,7 +197,7 @@ const GameBoard = ({ gameState, actions, computed }: GameBoardProps) => {
                       className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold px-4 py-2"
                       onClick={handleNewGame}
                     >
-                      New Game
+                      {t("newGame")}
                     </Button>
                   )}
                 </div>

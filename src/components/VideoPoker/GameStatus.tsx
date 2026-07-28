@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { GamePhase, HandEvaluation } from "@/types/game";
 import { Card, CardContent } from "@/components/ui/card";
 import { Sparkles, Target, Trophy, RefreshCw } from "lucide-react";
+import { useLanguage } from "@/i18n/useLanguage";
 
 interface GameStatusProps {
   phase: GamePhase;
@@ -17,21 +18,23 @@ const GameStatus: React.FC<GameStatusProps> = ({
   credits,
   bet,
 }) => {
+  const { t, tHandRank } = useLanguage();
+
   const getStatusContent = () => {
     switch (phase) {
       case "betting":
         return {
           icon: <Target className="w-6 h-6" />,
-          title: "Place Your Bet",
-          message: "Choose your bet amount and deal the cards!",
+          title: t("statusBettingTitle"),
+          message: t("statusBettingMessage"),
           color: "bg-blue-600",
           textColor: "text-blue-100"
         };
       case "dealt":
         return {
           icon: <Sparkles className="w-6 h-6" />,
-          title: "Select Cards to Hold",
-          message: "Click on cards you want to keep, then draw!",
+          title: t("statusDealtTitle"),
+          message: t("statusDealtMessage"),
           color: "bg-purple-600",
           textColor: "text-purple-100"
         };
@@ -39,16 +42,19 @@ const GameStatus: React.FC<GameStatusProps> = ({
         if (handEvaluation?.isWinning) {
           return {
             icon: <Trophy className="w-6 h-6" />,
-            title: "Winner!",
-            message: `${handEvaluation.description} - Won ${handEvaluation.payout} credits!`,
+            title: t("statusWinnerTitle"),
+            message: t("statusWinnerMessage", {
+              hand: tHandRank(handEvaluation.rank),
+              amount: handEvaluation.payout,
+            }),
             color: "bg-green-600",
             textColor: "text-green-100"
           };
         } else {
           return {
             icon: <RefreshCw className="w-6 h-6" />,
-            title: "Try Again",
-            message: "Better luck next time! Ready for another hand?",
+            title: t("statusTryAgainTitle"),
+            message: t("statusTryAgainMessage"),
             color: "bg-gray-600",
             textColor: "text-gray-100"
           };
@@ -56,8 +62,8 @@ const GameStatus: React.FC<GameStatusProps> = ({
       default:
         return {
           icon: <Target className="w-6 h-6" />,
-          title: "Video Poker",
-          message: "Ready to play!",
+          title: t("statusDefaultTitle"),
+          message: t("statusDefaultMessage"),
           color: "bg-blue-600",
           textColor: "text-blue-100"
         };
@@ -113,8 +119,8 @@ const GameStatus: React.FC<GameStatusProps> = ({
             transition={{ delay: 0.3, duration: 0.3 }}
             className={`flex justify-between mt-3 pt-3 border-t border-white border-opacity-20 text-sm ${status.textColor}`}
           >
-            <span>Credits: {credits}</span>
-            <span>Current Bet: {bet}</span>
+            <span>{t("credits")}: {credits}</span>
+            <span>{t("statusCurrentBet")}: {bet}</span>
           </motion.div>
         </CardContent>
       </Card>

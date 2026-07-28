@@ -1,5 +1,5 @@
 import { Card, GameMode, HandRank, HandEvaluation } from "@/types/game";
-import { getCardValue, isWildCard, countWildCards, getPayoutTable, getHandDescription } from "./gameLogic";
+import { getCardValue, isWildCard, countWildCards, getPayoutTable } from "./gameLogic";
 
 // Count occurrences of each card value
 const getValueCounts = (cards: Card[], gameMode: GameMode): Map<number, number> => {
@@ -150,7 +150,6 @@ export const evaluateHand = (cards: Card[], gameMode: GameMode, bet: number): Ha
   if (cards.length !== 5) {
     return {
       rank: "high-card",
-      description: "Invalid Hand",
       payout: 0,
       isWinning: false
     };
@@ -239,7 +238,6 @@ export const evaluateHand = (cards: Card[], gameMode: GameMode, bet: number): Ha
 
   return {
     rank,
-    description: getHandDescription(rank),
     payout,
     isWinning: payout > 0,
     winningCardIndices

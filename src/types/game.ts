@@ -29,7 +29,6 @@ export type HandRank =
 
 export interface HandEvaluation {
   rank: HandRank;
-  description: string;
   payout: number;
   isWinning: boolean;
   winningCardIndices?: number[]; // Indices of cards that contribute to the winning hand
@@ -49,12 +48,6 @@ export interface GameState {
 export interface PayoutTable {
   [key: string]: number;
 }
-
-export const GAME_MODE_DESCRIPTIONS = {
-  regular: "Classic video poker - pair of Jacks or higher to win!",
-  jokers: "Includes a wild Joker card - any pair wins!",
-  deuces: "All 2s are wild cards - three of a kind minimum to win!"
-} as const;
 
 export const MIN_BET = 5;
 export const MAX_BET = 100;

@@ -5,6 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AlertCircle, Plus, Coins } from "lucide-react";
+import { useLanguage } from "@/i18n/useLanguage";
 
 interface CreditsManagerProps {
   currentCredits: number;
@@ -17,6 +18,7 @@ const CreditsManager: React.FC<CreditsManagerProps> = ({
   onAddCredits,
   minBet,
 }) => {
+  const { t } = useLanguage();
   const [customAmount, setCustomAmount] = useState<string>("100");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -42,20 +44,20 @@ const CreditsManager: React.FC<CreditsManagerProps> = ({
       <Card className="bg-red-800 border-red-600 border-2 text-white">
         <CardContent className="p-4 text-center">
           <AlertCircle className="w-8 h-8 mx-auto mb-2 text-red-300" />
-          <h3 className="text-lg font-bold mb-2">Out of Credits!</h3>
+          <h3 className="text-lg font-bold mb-2">{t("outOfCreditsTitle")}</h3>
           <p className="text-sm mb-4">
-            You need at least {minBet} credits to place a bet.
+            {t("outOfCreditsMessage", { minBet })}
           </p>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
               <Button variant="destructive" className="w-full">
                 <Plus className="w-4 h-4 mr-2" />
-                Add Credits
+                {t("addCredits")}
               </Button>
             </DialogTrigger>
             <DialogContent className="bg-green-800 text-white border-yellow-500">
               <DialogHeader>
-                <DialogTitle className="text-yellow-400">Add Credits</DialogTitle>
+                <DialogTitle className="text-yellow-400">{t("addCredits")}</DialogTitle>
               </DialogHeader>
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-2">
@@ -71,9 +73,9 @@ const CreditsManager: React.FC<CreditsManagerProps> = ({
                     </Button>
                   ))}
                 </div>
-                
+
                 <div className="space-y-2">
-                  <Label htmlFor="custom-amount">Custom Amount (1-10,000)</Label>
+                  <Label htmlFor="custom-amount">{t("customAmountLabel")}</Label>
                   <div className="flex gap-2">
                     <Input
                       id="custom-amount"
@@ -89,7 +91,7 @@ const CreditsManager: React.FC<CreditsManagerProps> = ({
                       className="bg-yellow-500 hover:bg-yellow-600 text-black"
                       onClick={handleCustomAdd}
                     >
-                      Add
+                      {t("add")}
                     </Button>
                   </div>
                 </div>
@@ -106,17 +108,17 @@ const CreditsManager: React.FC<CreditsManagerProps> = ({
       <Card className="bg-yellow-800 border-yellow-600 border-2 text-white">
         <CardContent className="p-3 text-center">
           <AlertCircle className="w-6 h-6 mx-auto mb-1 text-yellow-300" />
-          <p className="text-sm mb-2">Running low on credits!</p>
+          <p className="text-sm mb-2">{t("lowOnCredits")}</p>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
               <Button variant="outline" size="sm" className="bg-yellow-700 text-white border-yellow-600 hover:bg-yellow-600">
                 <Plus className="w-3 h-3 mr-1" />
-                Add More
+                {t("addMore")}
               </Button>
             </DialogTrigger>
             <DialogContent className="bg-green-800 text-white border-yellow-500">
               <DialogHeader>
-                <DialogTitle className="text-yellow-400">Add Credits</DialogTitle>
+                <DialogTitle className="text-yellow-400">{t("addCredits")}</DialogTitle>
               </DialogHeader>
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-2">
@@ -132,9 +134,9 @@ const CreditsManager: React.FC<CreditsManagerProps> = ({
                     </Button>
                   ))}
                 </div>
-                
+
                 <div className="space-y-2">
-                  <Label htmlFor="custom-amount">Custom Amount (1-10,000)</Label>
+                  <Label htmlFor="custom-amount">{t("customAmountLabel")}</Label>
                   <div className="flex gap-2">
                     <Input
                       id="custom-amount"
@@ -150,7 +152,7 @@ const CreditsManager: React.FC<CreditsManagerProps> = ({
                       className="bg-yellow-500 hover:bg-yellow-600 text-black"
                       onClick={handleCustomAdd}
                     >
-                      Add
+                      {t("add")}
                     </Button>
                   </div>
                 </div>
