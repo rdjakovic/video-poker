@@ -1,19 +1,14 @@
-import React, { useState } from "react";
 import GameBoard from "./VideoPoker/GameBoard";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { GameMode, GAME_MODE_DESCRIPTIONS } from "@/types/game";
+import { useVideoPoker } from "@/hooks/useVideoPoker";
 
 const Home = () => {
-  const [gameMode, setGameMode] = useState<GameMode>("regular");
-  const [credits, setCredits] = useState<number>(1000);
+  const { gameState, actions, computed } = useVideoPoker(1000);
 
   const handleGameModeChange = (value: string) => {
-    setGameMode(value as GameMode);
-  };
-
-  const handleCreditsChange = (amount: number) => {
-    setCredits((prevCredits) => prevCredits + amount);
+    actions.changeGameMode(value as GameMode);
   };
 
   return (
@@ -24,25 +19,28 @@ const Home = () => {
         <CardContent className="p-0">
           <div className="p-2 sm:p-4">
             <Tabs
-              defaultValue="regular"
+              value={gameState.mode}
               onValueChange={handleGameModeChange}
               className="w-full"
             >
               <TabsList className="grid grid-cols-3 mb-2 bg-green-600">
                 <TabsTrigger
                   value="regular"
+                  disabled={gameState.phase === "dealt"}
                   className="text-sm data-[state=active]:bg-white data-[state=active]:text-green-800 data-[state=inactive]:text-green-100 data-[state=inactive]:hover:text-white"
                 >
                   Regular 5 Card Draw
                 </TabsTrigger>
                 <TabsTrigger
                   value="jokers"
+                  disabled={gameState.phase === "dealt"}
                   className="text-sm data-[state=active]:bg-white data-[state=active]:text-green-800 data-[state=inactive]:text-green-100 data-[state=inactive]:hover:text-white"
                 >
                   Joker's Wild
                 </TabsTrigger>
                 <TabsTrigger
                   value="deuces"
+                  disabled={gameState.phase === "dealt"}
                   className="text-sm data-[state=active]:bg-white data-[state=active]:text-green-800 data-[state=inactive]:text-green-100 data-[state=inactive]:hover:text-white"
                 >
                   Deuces Wild
@@ -51,33 +49,11 @@ const Home = () => {
 
               {/* Game mode description */}
               <div className="text-center text-yellow-200 mb-4 text-sm italic">
-                {GAME_MODE_DESCRIPTIONS[gameMode]}
+                {GAME_MODE_DESCRIPTIONS[gameState.mode]}
               </div>
-
-              <TabsContent value="regular">
-                <GameBoard
-                  gameMode="regular"
-                  initialCredits={credits}
-                  onCreditsChange={handleCreditsChange}
-                />
-              </TabsContent>
-
-              <TabsContent value="jokers">
-                <GameBoard
-                  gameMode="jokers"
-                  initialCredits={credits}
-                  onCreditsChange={handleCreditsChange}
-                />
-              </TabsContent>
-
-              <TabsContent value="deuces">
-                <GameBoard
-                  gameMode="deuces"
-                  initialCredits={credits}
-                  onCreditsChange={handleCreditsChange}
-                />
-              </TabsContent>
             </Tabs>
+
+            <GameBoard gameState={gameState} actions={actions} computed={computed} />
           </div>
         </CardContent>
       </Card>

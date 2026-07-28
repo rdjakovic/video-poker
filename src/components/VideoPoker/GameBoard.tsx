@@ -1,4 +1,3 @@
-import React from "react";
 import { Button } from "@/components/ui/button";
 import CardHand from "./CardHand";
 import PayoutTable from "./PayoutTable";
@@ -6,37 +5,17 @@ import WinNotification from "./WinNotification";
 import CreditsManager from "./CreditsManager";
 import GameStatus from "./GameStatus";
 import { MinusIcon, PlusIcon } from "lucide-react";
-import { useVideoPoker } from "@/hooks/useVideoPoker";
-import { GameMode } from "@/types/game";
+import { VideoPokerActions, VideoPokerComputed } from "@/hooks/useVideoPoker";
+import { GameState } from "@/types/game";
 import { motion } from "framer-motion";
 
 interface GameBoardProps {
-  initialCredits?: number;
-  gameMode?: GameMode;
-  onCreditsChange?: (amount: number) => void;
+  gameState: GameState;
+  actions: VideoPokerActions;
+  computed: VideoPokerComputed;
 }
 
-const GameBoard = ({
-  initialCredits = 1000,
-  gameMode = "regular",
-  onCreditsChange,
-}: GameBoardProps) => {
-  const { gameState, actions, computed } = useVideoPoker(initialCredits);
-
-  // Sync with parent component's game mode if provided
-  React.useEffect(() => {
-    if (gameMode !== gameState.mode) {
-      actions.changeGameMode(gameMode);
-    }
-  }, [gameMode, gameState.mode, actions]);
-
-  // Notify parent of credits changes
-  React.useEffect(() => {
-    if (onCreditsChange) {
-      onCreditsChange(gameState.credits - initialCredits);
-    }
-  }, [gameState.credits, initialCredits, onCreditsChange]);
-
+const GameBoard = ({ gameState, actions, computed }: GameBoardProps) => {
   const handleNewGame = () => {
     actions.newGame();
   };
@@ -104,27 +83,6 @@ const GameBoard = ({
             showBacks={gameState.phase === "betting"}
             winningCardIndices={gameState.lastHandEvaluation?.winningCardIndices || []}
           />
-
-          {/* Auto-play logic for Draw only */}
-          {/*
-          {gameState.phase === "dealt" && (
-            <div className="flex justify-center mt-4 mb-4">
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                transition={{ duration: 0.1 }}
-              >
-                <Button
-                  variant="outline"
-                  className="bg-purple-600 text-white hover:bg-purple-700 border-purple-500 text-lg px-8 py-3"
-                  onClick={handleDeal}
-                >
-                  Draw Cards
-                </Button>
-              </motion.div>
-            </div>
-          )}
-          */}
 
           {/* Bet controls */}
           <div className="flex flex-col sm:flex-row justify-between items-center bg-green-900 p-3 sm:p-4 rounded-lg gap-4">

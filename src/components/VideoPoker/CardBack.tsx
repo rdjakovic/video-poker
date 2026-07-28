@@ -55,7 +55,7 @@ const CardBack: React.FC<CardBackProps> = ({ className = "", onClick }) => {
             </svg>
           </div>
 
-          <div className="absolute bottom-0 left-0 w-6 h-6 rotate-270">
+          <div className="absolute bottom-0 left-0 w-6 h-6 -rotate-90">
             <svg viewBox="0 0 24 24" className="w-full h-full fill-red-600">
               <circle cx="6" cy="6" r="2"/>
               <circle cx="12" cy="6" r="1"/>

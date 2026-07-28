@@ -1,4 +1,4 @@
-import { Card, Suit, Value, GameMode, HandRank, HandEvaluation, PayoutTable } from "@/types/game";
+import { Card, Suit, Value, GameMode, HandRank, PayoutTable } from "@/types/game";
 
 // Create a standard 52-card deck
 export const createDeck = (includeJokers = false): Card[] => {

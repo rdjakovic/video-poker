@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { GameState, GameMode, GamePhase, Card, HandEvaluation, MIN_BET, MAX_BET, BET_INCREMENT, Suit, Value } from "@/types/game";
+import { GameState, GameMode, Card, MIN_BET, MAX_BET, BET_INCREMENT, Suit, Value } from "@/types/game";
 import { createDeck, shuffleDeck, dealCards } from "@/lib/gameLogic";
 import { evaluateHand } from "@/lib/handEvaluator";
 
@@ -25,6 +25,24 @@ const createInitialGameState = (mode: GameMode, initialCredits: number): GameSta
   totalWinnings: 0,
 });
 
+export interface VideoPokerActions {
+  changeGameMode: (mode: GameMode) => void;
+  adjustBet: (amount: number) => void;
+  increaseBet: () => void;
+  decreaseBet: () => void;
+  setMaxBet: () => void;
+  dealHand: () => void;
+  toggleHold: (cardIndex: number) => void;
+  drawCards: () => void;
+  newGame: () => void;
+  addCredits: (amount: number) => void;
+}
+
+export interface VideoPokerComputed {
+  canAffordBet: boolean;
+  isGameInProgress: boolean;
+}
+
 export const useVideoPoker = (initialCredits: number = 1000) => {
   const [gameState, setGameState] = useState<GameState>(
     createInitialGameState("regular", initialCredits)
@@ -32,10 +50,14 @@ export const useVideoPoker = (initialCredits: number = 1000) => {
 
   // Change game mode
   const changeGameMode = useCallback((mode: GameMode) => {
-    setGameState(prev => ({
-      ...createInitialGameState(mode, prev.credits),
-      totalWinnings: prev.totalWinnings,
-    }));
+    setGameState(prev => {
+      if (prev.mode === mode) return prev;
+
+      return {
+        ...createInitialGameState(mode, prev.credits),
+        totalWinnings: prev.totalWinnings,
+      };
+    });
   }, []);
 
   // Adjust bet amount

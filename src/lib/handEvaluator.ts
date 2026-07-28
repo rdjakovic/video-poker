@@ -1,15 +1,9 @@
 import { Card, GameMode, HandRank, HandEvaluation } from "@/types/game";
 import { getCardValue, isWildCard, countWildCards, getPayoutTable, getHandDescription } from "./gameLogic";
 
-// Sort cards by value for easier evaluation
-const sortCardsByValue = (cards: Card[]): Card[] => {
-  return [...cards].sort((a, b) => getCardValue(a) - getCardValue(b));
-};
-
 // Count occurrences of each card value
 const getValueCounts = (cards: Card[], gameMode: GameMode): Map<number, number> => {
   const counts = new Map<number, number>();
-  const wildCount = countWildCards(cards, gameMode);
 
   cards.forEach(card => {
     if (!isWildCard(card, gameMode)) {
