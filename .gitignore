@@ -28,9 +28,6 @@ dist-ssr
 
 core
 
-.github/
-
-
 node_modules/.vite/deps/_metadata.json
 node_modules/.vite/deps/react_jsx-runtime.js
 node_modules/.vite/deps/react_jsx-runtime.js.map
